@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: micsrv-mq-service
+
+
+logging:
+  pattern:
+    console: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta}%clr(---){faint} %clr([%15.15t][%32X{_traceId_}]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n %wEx'
+
+dubbo:
+  protocol:
+    name: dubbo
+    port: 20883
+  registry:
+    address: zookeeper://localhost:2181
+    check: false
+  consumer:
+    check: false
+
+rocketmq:
+  namesrvAddr: localhost:9876
+  producerGroup: ${spring.application.name}-rocketmq-producer-group
+  consumerGroup: ${spring.application.name}-rocketmq-consumer-group
