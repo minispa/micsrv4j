@@ -12,13 +12,20 @@ public class CommonsTest {
 
     @SneakyThrows
     public static void finalTrigger() {
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             try {
                 System.out.println("i - " + i);
+                if(i == 1) {
+                    throw new NullPointerException("i == 1");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 System.out.println("finally - " + i);
             }
         }
-        TimeUnit.SECONDS.sleep(600);
     }
+
+
+
 }

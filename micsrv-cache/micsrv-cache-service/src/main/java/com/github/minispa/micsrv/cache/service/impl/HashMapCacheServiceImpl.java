@@ -8,7 +8,7 @@ import org.apache.dubbo.config.annotation.Service;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Service
+@Service(group = "hashMapCacheServiceImpl")
 public class HashMapCacheServiceImpl implements CacheService {
 
     public static final ConcurrentHashMap<String, Object> cache = new ConcurrentHashMap<>();
