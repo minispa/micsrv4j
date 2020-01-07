@@ -24,10 +24,12 @@ public class MatedataServiceImpl implements MatedataService {
     @Override
     public JSONArray getMatedata(String filePath) {
         log.info("getMatedata - filePath: {}", filePath);
-        JSONArray matedata = (JSONArray) hashMapCacheService.getObject(filePath);
+        JSONArray matedata = (JSONArray) hashMapCacheService.get(filePath);
         if(Objects.isNull(matedata)) {
             matedata = fFprobeProcService.getStreams(filePath);
-            hashMapCacheService.putObject(filePath, matedata);
+        }
+        if(Objects.nonNull(matedata)) {
+            hashMapCacheService.add(filePath, matedata);
         }
         return matedata;
     }

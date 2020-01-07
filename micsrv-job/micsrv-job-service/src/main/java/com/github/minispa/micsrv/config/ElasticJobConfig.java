@@ -10,14 +10,28 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.api.SpringJobScheduler;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import com.github.minispa.micsrv.job.ComplexMarkSimpleJob;
+import com.github.minispa.micsrv.job.MatedataSimpleJob;
+import com.github.minispa.micsrv.media.service.MatedataService;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.annotation.AnnotationBeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StopWatch;
 
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+
 @Configuration
+@EnableConfigurationProperties(ElasticJobProperties.class)
 public class ElasticJobConfig {
 
     @Value("${elasticjob.regCenter.serverList}")
@@ -26,12 +40,7 @@ public class ElasticJobConfig {
     private String namespace;
 
     @Bean(initMethod = "init")
-    public ZookeeperRegistryCenter regCenter(
-/*
-            @Value("${elasticjob.regCenter.serverList}") final String serverList,
-            @Value("${elasticjob.regCenter.namespace}")  final String namespace
-*/
-    ) {
+    public ZookeeperRegistryCenter regCenter() {
         return new ZookeeperRegistryCenter(new ZookeeperConfiguration(serverList, namespace));
     }
 
@@ -40,7 +49,6 @@ public class ElasticJobConfig {
      *
      * @return
      */
-    @Bean
     public ElasticJobListener elasticJobListener() {
         return new TimeWatcherElasticJobListener();
     }
@@ -91,15 +99,25 @@ public class ElasticJobConfig {
     }
 
     @Bean(initMethod = "init")
-    public JobScheduler simpleJobScheduler(final SimpleJob simpleJob,
-                                           @Value("${elasticjob.stockSimpleJob.cron}") final String cron,
-                                           @Value("${elasticjob.stockSimpleJob.shardingTotalCount}") final int shardingTotalCount,
-                                           @Value("${elasticjob.stockSimpleJob.shardingItemParameters}") final String shardingItemParameters) {
+    public JobScheduler matedataJobScheduler(final SimpleJob matedataSimpleJob,
+                                          @Value("${elasticjob.jobScheduler.matedataSimpleJob.cron}") final String cron,
+                                          @Value("${elasticjob.jobScheduler.matedataSimpleJob.shardingTotalCount}") final int shardingTotalCount,
+                                          @Value("${elasticjob.jobScheduler.matedataSimpleJob.shardingItemParameters}") final String shardingItemParameters) {
 
-        return new SpringJobScheduler(simpleJob, regCenter(),
-                getLiteJobConfiguration(simpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters),
+        return new SpringJobScheduler(matedataSimpleJob, regCenter(),
+                getLiteJobConfiguration(matedataSimpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters),
                 elasticJobListener());
     }
 
+    @Bean(initMethod = "init")
+    public JobScheduler complexMarkJobScheduler(final SimpleJob complexMarkSimpleJob,
+                                           @Value("${elasticjob.jobScheduler.complexMarkSimpleJob.cron}") final String cron,
+                                           @Value("${elasticjob.jobScheduler.complexMarkSimpleJob.shardingTotalCount}") final int shardingTotalCount,
+                                           @Value("${elasticjob.jobScheduler.complexMarkSimpleJob.shardingItemParameters}") final String shardingItemParameters) {
+
+        return new SpringJobScheduler(complexMarkSimpleJob, regCenter(),
+                getLiteJobConfiguration(complexMarkSimpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters),
+                elasticJobListener());
+    }
 
 }

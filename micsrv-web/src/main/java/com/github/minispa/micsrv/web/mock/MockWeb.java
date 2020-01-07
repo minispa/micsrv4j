@@ -1,6 +1,8 @@
 package com.github.minispa.micsrv.web.mock;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.github.minispa.micsrv.cache.CacheService;
 import com.github.minispa.micsrv.media.service.MatedataService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
@@ -13,12 +15,16 @@ public class MockWeb {
 
     @Reference
     private MatedataService matedataService;
+    @Reference
+    private CacheService hashMapCacheService;
 
     @GetMapping("matedata")
     public JSONArray matedata(@RequestParam("filePath") String filePath) {
         log.info("matedata - filePath: {}", filePath);
         final JSONArray matedata = matedataService.getMatedata(filePath);
         log.info("matedate - matedata: {}", matedata);
+        final Object o = hashMapCacheService.get(filePath);
+        log.info("matedata - cache: {}", JSON.toJSONString(o));
         return matedata;
     }
 

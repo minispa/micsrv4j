@@ -8,7 +8,7 @@ import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+//@Component
 public class RocketMQSysTraceConsumer extends AbstractMessageListenerConcurrently<JSONObject> {
 
     @Override

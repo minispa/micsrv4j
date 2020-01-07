@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 
 @SpringBootApplication
+@EnableDubbo
 public class ApplicationMain {
 
     public static void main(String[] args) {

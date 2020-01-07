@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @SpringBootApplication
@@ -26,23 +27,19 @@ public class ApplicationMain {
     @Bean
     public CommandLineRunner commandLineRunner() {
         return (args) -> {
-            MockMessage traceMessage = new MockMessage();
-            traceMessage.setFilePath("C:\\Users\\Mr.Y\\Videos\\filehub\\origin.mp4");
-            traceMessage.setTimestamp(System.currentTimeMillis());
-            final SendResult sendResult = messageSender.send("stock_topic", traceMessage);
-            log.info("sendResult：{}", sendResult);
+            while(true) {
+                MockMessage traceMessage = new MockMessage();
+                traceMessage.setFilePath("C:\\Users\\Mr.Y\\Videos\\filehub\\origin.mp4");
+                traceMessage.setTimestamp(System.currentTimeMillis());
+                final SendResult sendResult = messageSender.send("mock_topic", traceMessage);
+                log.info("sendResult：{}", sendResult);
+                TimeUnit.SECONDS.sleep(5);
+            }
         };
     }
 
     public static void main(String[] args) {
         SpringApplication.run(ApplicationMain.class, args);
     }
-
-//    public static class TriggerCommand implements CommandLineRunner {
-//        @Override
-//        public void run(String... args) throws Exception {
-//
-//        }
-//    }
 
 }

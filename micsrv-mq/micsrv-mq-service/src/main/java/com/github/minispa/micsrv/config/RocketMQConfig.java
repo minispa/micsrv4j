@@ -15,7 +15,7 @@ public class RocketMQConfig {
 
     @Bean(initMethod = "start", destroyMethod = "shutdown")
     public DefaultMQProducer defaultMQProducer() {
-        DefaultMQProducer defaultMQProducer = new DefaultMQProducer(producerGroup, true);
+        DefaultMQProducer defaultMQProducer = new DefaultMQProducer(producerGroup);
         defaultMQProducer.setNamesrvAddr(namesrvAddr);
         return defaultMQProducer;
     }
