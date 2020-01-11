@@ -1,20 +1,21 @@
 package com.github.minispa.micsrv.media.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.github.minispa.micsrv.cache.CacheService;
+import com.github.minispa.micsrv.media.model.Metadata;
 import com.github.minispa.micsrv.media.service.FFprobeProcService;
-import com.github.minispa.micsrv.media.service.MatedataService;
+import com.github.minispa.micsrv.media.service.MetadataService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
 @Service
-public class MatedataServiceImpl implements MatedataService {
+public class MetadataServiceImpl implements MetadataService {
 
     @Reference
     private CacheService hashMapCacheService;
@@ -22,15 +23,14 @@ public class MatedataServiceImpl implements MatedataService {
     private FFprobeProcService fFprobeProcService;
 
     @Override
-    public JSONArray getMatedata(String filePath) {
-        log.info("getMatedata - filePath: {}", filePath);
-        JSONArray matedata = (JSONArray) hashMapCacheService.get(filePath);
-        if(Objects.isNull(matedata)) {
-            matedata = fFprobeProcService.getStreams(filePath);
+    public List<Metadata> getMetadata(String filePath) {
+        log.info("getMetadata - filePath: {}", filePath);
+        List<Metadata> metadata = (List<Metadata>) hashMapCacheService.get(filePath);
+        if(Objects.isNull(metadata) && !metadata.isEmpty()) {
+            metadata = fFprobeProcService.getMetadata(filePath);
+            hashMapCacheService.add(filePath, metadata);
         }
-        if(Objects.nonNull(matedata)) {
-            hashMapCacheService.add(filePath, matedata);
-        }
-        return matedata;
+        return metadata;
     }
+
 }

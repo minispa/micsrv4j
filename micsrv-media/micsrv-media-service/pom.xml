@@ -110,6 +110,18 @@
             <version>4.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>${rocketmq.version}</version>
+        </dependency>
+
+        <!-- minIO OSS -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>6.0.8</version>
+        </dependency>
 
     </dependencies>
 
